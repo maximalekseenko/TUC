@@ -70,12 +70,8 @@ def on_key_press(symbol, modifiers):
         window.get_size()[1]/2+FIELD_TILE_H*2, 
         0, 1)
     if symbol == pyglet.window.key.D: window.on_mouse_scroll(
-            window.get_size()[0]/2+FIELD_TILE_W*2,
-            window.get_size()[1]/2+FIELD_TILE_H*2, 
-            0, -1)
-    # window.on_mouse_scroll(
-    #     window.get_size()[0]/2+FIELD_TILE_W*2,
-    #     window.get_size()[1]/2+FIELD_TILE_H*2, 
-        # 0, 0)
+        window.get_size()[0]/2+FIELD_TILE_W*2,
+        window.get_size()[1]/2+FIELD_TILE_H*2, 
+        0, -1)
 
 pyglet.app.run()

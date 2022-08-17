@@ -34,8 +34,7 @@ class Field_Window(pyglet.window.Window):
         self.tile = pyglet.sprite.Sprite(HEXIMAGE)
         self.tile2 = pyglet.sprite.Sprite(HEXIMAGE2)
         self.tile3 = pyglet.sprite.Sprite(HEXIMAGE3)
-        self.scaler = 0
-        self._scale = 0
+        self._scale = FIELD_WINDOW_SCALE_DEFAULT
         self.camera_x = 0# self.field.size//2 * FIELD_TILE_W * 0.75
         self.camera_y = 0# self.field.size//2 * FIELD_TILE_H + (self.field.size // 2 - self.field.size//2) * FIELD_TILE_H / 2
 
@@ -45,8 +44,7 @@ class Field_Window(pyglet.window.Window):
 
     @property
     def scale(self) -> float:
-        return FIELD_WINDOW_SCALE_DEFAULT + \
-            (max(0, self._scale) + 1) / (-min(0, self._scale) + 1)
+        return (-min(0, self._scale) + 1) / (max(0, self._scale) + 1)
 
 
     def Convert_Index_To_Pixel(self, index_x:int, index_y:int):
@@ -98,7 +96,7 @@ class Field_Window(pyglet.window.Window):
             else: self.tile.draw()
 
 
-    def on_draw(self):
+    def oAn_draw(self):
         self.clear()
         for index_x in range(10):
             for index_y in range(10):
@@ -137,21 +135,17 @@ class Field_Window(pyglet.window.Window):
         pyglet.graphics.draw(1, pyglet.gl.GL_POINTS,
                 ('v2i', (self.get_size()[0] // 2 + int(FIELD_TILE_W*2), self.get_size()[1] // 2 + int(FIELD_TILE_H*2))),
                 ('c3B', (0,0,255)))
-        pyglet.text.Label(str(self.scale),
+
+
+        pyglet.text.Label(f"S {self.scale} {1/self.scale}",
                     font_size=10,
-                    ).draw()
-        pyglet.text.Label(str(self.scaler),
-                    font_size=10,
-                    y=10 + 1,
                     ).draw()
                 
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         old_scale = self.scale
 
-        A = scroll_y / 10 * FIELD_WINDOW_SCALE_SPEED
-
-        self._scale += A
+        self._scale += scroll_y / 10 * FIELD_WINDOW_SCALE_SPEED
 
         # validate scale
         if self._scale <= FIELD_WINDOW_SCALE_MIN: self._scale = FIELD_WINDOW_SCALE_MIN
@@ -159,7 +153,6 @@ class Field_Window(pyglet.window.Window):
 
         # move camera if needed
         if scroll_y:
-            self.scaler = f"{self.scale - old_scale}\t{scroll_y}"
         
             # get delta (distance from mouse to screen center)
             delta_x = x - self.get_size()[0] / 2
