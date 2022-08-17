@@ -1,0 +1,4 @@
+FRACTIONS = []
+ENTITYS = []
+
+ASSETS = []
