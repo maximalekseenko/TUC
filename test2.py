@@ -1,34 +1,54 @@
-import pyglet
-
-import pyglet
-
-window = pyglet.window.Window()
-window2 = pyglet.window.Window()
-print(window.get_size())
-# image = pyglet.resource.image('kitten.jpg')
-
-label = pyglet.text.Label('KILL MUTANT',
-                          font_name='Times New Roman',
-                          font_size=36,
-                          x=window.width//2, y=window.height//2,
-                          anchor_x='center', anchor_y='center')
-label2 = pyglet.text.Label('BURN HERETIC',
-                          font_name='Times New Roman',
-                          font_size=36,
-                          x=window.width//2, y=window.height//2,
-                          anchor_x='center', anchor_y='center')
+import pygame
+import pygame._sdl2
 
 
+class Game_Window:
+    def __init__(self) -> None:
+        self.window = pygame._sdl2.Window()
+        self.renderer = pygame._sdl2.Renderer(self.window)
 
-@window.event
-def on_draw():
-    window.clear()
-    label.draw()
 
-@window2.event
-def on_draw():
-    window2.clear()
-    label2.draw()
+    def render(self):
+        self.renderer.clear()
+
+
+    def handle_event(self, event:pygame.event.Event):
+        if event.type == pygame.WINDOWCLOSE:
+            self.close()
+
     
+    def close(self):
+        self.window.destroy()
 
-pyglet.app.run()
+
+
+game_windows = [
+    Game_Window(),
+    Game_Window(),
+    Game_Window()]
+running = True
+clock = pygame.time.Clock()
+
+
+
+while running:
+    clock.tick(60)
+
+    # render
+    for window in game_windows: window.render()
+
+    # event handle
+    for event in pygame.event.get():
+        event_window = getattr(event, "window", None)
+        for game_window in game_windows:
+            if event.type == pygame.QUIT:
+                running = False
+
+                
+            if game_window.window != event_window: continue
+
+            game_window.handle_event(event)
+            break
+
+
+pygame.quit()
