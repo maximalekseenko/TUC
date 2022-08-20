@@ -13,7 +13,7 @@ from game import Game
 game = Game()
 game.Generate_Data(
     tile_size = 3,
-    game_size = 1
+    game_size = 10
 )
 
         # if "width" not in kwargs: kwargs["width"] = None
@@ -43,7 +43,6 @@ import pyglet
 from field.window import Field_Window
 window = Field_Window(game.FIELD)
 
-
 # ret = str()
 # row = 0
 # for x, y in game.FIELD.Yield_Indexes():
@@ -59,9 +58,6 @@ window = Field_Window(game.FIELD)
 #     else: ret += '*'
 # print(ret)
 from primitives import *
-
-window.camera_x = 0
-window.camera_y = 0
 
 @window.event
 def on_key_press(symbol, modifiers):

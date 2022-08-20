@@ -35,7 +35,7 @@ def _Gen_Field(game:Game, **parameters):
         
         # is tile center?
         if y % (tile_size // 2) != 0: continue
-        if (x - (game.FIELD.center - y + tile_size // 2) % (tile_size + tile_size // 2 - 1)) % (tile_size // 2 * 3) != 0: continue
+        if (x - (game.FIELD.CENTER - y + tile_size // 2) % (tile_size + tile_size // 2 - 1)) % (tile_size // 2 * 3) != 0: continue
         
         # is border tile?
         if   not game.FIELD.Is_Valid_Position(x+1,y): game.FIELD.border_tiles.append((x, y))

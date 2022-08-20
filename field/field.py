@@ -8,36 +8,40 @@ from primitives import *
 
 
 class Field:
-    def __init__(self, size) -> None:
+    def __init__(self, size:int) -> None:
         # validate parameters
         if size % 2 == 0: Debug.Raise("Field.__init__()", ValueError("Even Field size"))
+
+        #
         self.loop = True
         self.size = size
 
-        self.center = 0
-        self.start = -self.size//2 + 1
-        self.end = self.size//2 + 1
+        # constants
+        self.CENTER = 0
+        self.START = -self.size//2 + 1
+        self.END = self.size//2 + 1
 
     
     def Yield_Indexes(self):
         '''Yields all valid indexes.'''
-        for y in range(self.start, self.end):
-            for x in range(self.start, self.end):
+        for y in range(self.START, self.END):
+            for x in range(self.START, self.END):
                 if self.Is_Valid_Position(x, y):
                     yield x, y
 
 
     def Is_Valid_Position(self, x:int, y:int) -> bool:
-        '''checks if position is on field'''
-        if self.end + x - y <= self.center: return False
-        if self.end - x + y <= self.center: return False
-        if x < self.start or x >= self.end: return False
-        if y < self.start or y >= self.end: return False
+        '''Checks if position is on field.'''
+
+        if self.END + x - y <= self.CENTER: return False
+        if self.END - x + y <= self.CENTER: return False
+        if x < self.START or x >= self.END: return False
+        if y < self.START or y >= self.END: return False
         return True
 
 
     def Get_In_Direction(self, x:int, y:int, direction:HEXDIRECTION) -> tuple:
-        ''''''
+        '''Get next hex in `direction` from hex[`x`, `y`]'''
 
         # get new 
         new_x = x + direction.value[0]
@@ -58,7 +62,8 @@ class Field:
 
 
     def Get_Heighbours(self, x:int, y:int) -> list:
-        '''Get all six neighbours.'''
+        '''Get all six neighbours of hex[`x`, `y`].'''
+
         return [self.Get_In_Direction(x, y, direction) for direction in HEXDIRECTION]
 
 
@@ -66,6 +71,6 @@ class Field:
         ret = str()
         for y in range(self.size):
             for x in range(self.size):
-                ret += '*' if self.Validate_Position(x,y) else ' '
+                ret += '*' if self.Is_Valid_Position(x,y) else ' '
             ret += '\n'
         return ret

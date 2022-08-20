@@ -1,14 +1,13 @@
 import pyglet
 
 
-
 from field import Field
 from primitives import *
 from settings import *
 
 
 class Field_Window(pyglet.window.Window):
-    '''Pyglet Window-based window that shows given window.'''
+    '''Pyglet's Window-based window that shows given window.'''
 
 
     def __init__(self, field:Field, *args, **kwargs):
@@ -35,8 +34,8 @@ class Field_Window(pyglet.window.Window):
         self.tile2 = pyglet.sprite.Sprite(HEXIMAGE2)
         self.tile3 = pyglet.sprite.Sprite(HEXIMAGE3)
         self._scale = FIELD_WINDOW_SCALE_DEFAULT
-        self.camera_x = 0# self.field.size//2 * FIELD_TILE_W * 0.75
-        self.camera_y = 0# self.field.size//2 * FIELD_TILE_H + (self.field.size // 2 - self.field.size//2) * FIELD_TILE_H / 2
+        self.camera_x = 0
+        self.camera_y = 0
 
         # super
         super().__init__(*args, **kwargs)
@@ -51,11 +50,11 @@ class Field_Window(pyglet.window.Window):
 
         # convert
         pixel_x = index_x * FIELD_TILE_W * 0.75
-        pixel_y = index_y * FIELD_TILE_H + (self.field.center - index_x) * FIELD_TILE_H / 2
+        pixel_y = index_y * FIELD_TILE_H + (self.field.CENTER - index_x) * FIELD_TILE_H / 2
         
         # move by tile center
-        pixel_x -= FIELD_TILE_W // 2
-        pixel_y -= FIELD_TILE_H // 2
+        pixel_x -= FIELD_TILE_W / 2
+        pixel_y -= FIELD_TILE_H / 2
 
         # move by camera
         pixel_x -= self.camera_x
@@ -66,8 +65,8 @@ class Field_Window(pyglet.window.Window):
         pixel_y *= self.scale
 
         # move by window center
-        pixel_x += self.get_size()[0] // 2
-        pixel_y += self.get_size()[1] // 2
+        pixel_x += self.get_size()[0] / 2
+        pixel_y += self.get_size()[1] / 2
 
         # return
         return pixel_x, pixel_y      
@@ -90,57 +89,13 @@ class Field_Window(pyglet.window.Window):
             self.tile3.x, self.tile3.y = self.Convert_Index_To_Pixel(x, y)
 
             # render
-            if (x, y) == (self.field.center, self.field.center): self.tile.draw()
+            if (x, y) == (self.field.CENTER, self.field.CENTER): self.tile.draw()
             elif (x, y) in self.field.start_tiles: self.tile2.draw()
             elif (x, y) in self.field.border_tiles: self.tile3.draw()
             else: self.tile.draw()
 
-
-    def oAn_draw(self):
-        self.clear()
-        for index_x in range(10):
-            for index_y in range(10):
-                pixel_x = index_x * FIELD_TILE_W
-                pixel_y = index_y * FIELD_TILE_H
-                
-                # move by tile center
-                # pixel_x -= FIELD_TILE_W // 2
-                # pixel_y -= FIELD_TILE_H // 2
-
-                # move by camera
-                pixel_x -= self.camera_x
-                pixel_y -= self.camera_y
-
-                # scale
-                pixel_x *= self.scale
-                pixel_y *= self.scale
-
-                # move by window center
-                pixel_x += self.get_size()[0] / 2
-                pixel_y += self.get_size()[1] / 2
-
-
-                # SQUAREIMAGE.scale = self.scale
-                # SQUAREIMAGE.x, SQUAREIMAGE.y = pixel_x, pixel_y
-                # print(pixel_x, pixel_y)
-
-                # render
-                # SQUAREIMAGE.draw()
-                pyglet.graphics.draw(1, pyglet.gl.GL_POINTS,
-                        ('v2i', (int(pixel_x), int(pixel_y))),
-                        ('c3B', (255, 255, 255)))
-        pyglet.graphics.draw(1, pyglet.gl.GL_POINTS,
-                ('v2i', (self.get_size()[0] // 2, self.get_size()[1] // 2)),
-                ('c3B', (255, 0, 0)))
-        pyglet.graphics.draw(1, pyglet.gl.GL_POINTS,
-                ('v2i', (self.get_size()[0] // 2 + int(FIELD_TILE_W*2), self.get_size()[1] // 2 + int(FIELD_TILE_H*2))),
-                ('c3B', (0,0,255)))
-
-
-        pyglet.text.Label(f"S {self.scale} {1/self.scale}",
-                    font_size=10,
-                    ).draw()
-                
+        self.draw_debug()
+        
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
         old_scale = self.scale
@@ -171,3 +126,19 @@ class Field_Window(pyglet.window.Window):
         if buttons == FIELD_WINDOW_CAMERA_MOVE_BUTTON:
             self.camera_x -= dx / self.scale
             self.camera_y -= dy / self.scale
+
+
+    def draw_debug(self):
+        step = 0
+
+        # window size
+        pyglet.text.Label(
+            f"window resolution: {self.width} {self.height}",
+            font_size=DEBUG_FONT_SIZE,
+            y=step*DEBUG_FONT_STEP).draw()
+        step += 1
+
+        # pyglet.text.Label(f"{self.width} {self.height}",
+        #     font_size=10,
+        #     ).draw()
+        # step += 1
